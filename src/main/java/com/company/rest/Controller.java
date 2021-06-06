@@ -102,7 +102,7 @@ public class Controller {
     }
     @GetMapping(value = "/payments_meeting/{id_meeting}")
     public ResponseEntity getPaymentByMeeting(@PathVariable Integer id_meeting){
-        return ResponseEntity.ok(userService.getPayments(id_meeting,null,"Meeting").getPaymentListDto());
+        return ResponseEntity.ok(userService.getPayments(id_meeting,null,"Meeting"));
     }
     @GetMapping(value = "/payments_person/{id_person}")
     public ResponseEntity getPaymentByPerson(@PathVariable Integer id_person){
