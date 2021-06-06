@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/ud-server/")
@@ -67,14 +69,13 @@ public class Controller {
     @CrossOrigin
     @PostMapping(value = "/create_meeting")
     public ResponseEntity createMeeting(@RequestParam String name, @RequestParam String password){
-        if(userService.createMeeting(name, password)){
+        Optional<String> newMeetingCode = userService.createMeeting(name, password);
+        if(newMeetingCode.isPresent()){
             LOGGER.info("---- Meeting created successfully ----");
-            return ResponseEntity.ok().body("Meeting created successfully");
+            return ResponseEntity.ok().body(newMeetingCode.get());
         }
-        else{
-            LOGGER.info("---- Error occurred ----");
-            return ResponseEntity.badRequest().body("Error occurred");
-        }
+        LOGGER.info("---- Error occurred ----");
+        return ResponseEntity.badRequest().body("Error occurred");
     }
     @PostMapping(value = "/join_meeting")
     public ResponseEntity joinMeeting(@RequestParam String code, @RequestParam String password){

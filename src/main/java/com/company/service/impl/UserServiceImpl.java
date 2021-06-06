@@ -12,10 +12,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -524,22 +521,6 @@ public class UserServiceImpl implements UserService {
         System.out.println("Insert Payment done successfully");
         return true;
     }
-    private Calendar createCalendar(String sqlDate){
-        Calendar cal = Calendar.getInstance();
-        int yy = Integer.parseInt(sqlDate.substring(0, 4));
-        int MM = Integer.parseInt(sqlDate.substring(5,7));
-        int dd = Integer.parseInt(sqlDate.substring(8, 10));
-        int HH = Integer.parseInt(sqlDate.substring(11, 13));
-        int mm = Integer.parseInt(sqlDate.substring(14, 16));
-        int ss = Integer.parseInt(sqlDate.substring(17, 19));
-        cal.set(Calendar.YEAR,yy);
-        cal.set(Calendar.MONTH,MM-1);
-        cal.set(Calendar.DAY_OF_MONTH,dd);
-        cal.set(Calendar.HOUR_OF_DAY,HH);
-        cal.set(Calendar.MINUTE,mm);
-        cal.set(Calendar.SECOND,ss);
-        return cal;
-    }
     @Override
     public PaymentListDto getPayments(Integer idTable, Integer idPerson, String which){
         userRepository.initUsers();
@@ -642,9 +623,10 @@ public class UserServiceImpl implements UserService {
         return stringBuilder.toString();
     }
     @Override
-    public boolean createMeeting(String name, String password){
+    public Optional<String> createMeeting(String name, String password){
         userRepository.initUsers();
         userRepository.initMeetings();
+        Integer freeMeetingId = getFreeMeetingId();
         Connection c = null;
         Statement stmt  = null;
         String code = null;
@@ -665,7 +647,7 @@ public class UserServiceImpl implements UserService {
 
             stmt = c.createStatement();
             stmt.executeUpdate(
-                    "INSERT INTO debt.meeting(id_meeting, name, code, password) VALUES("+ getFreeMeetingId() + ",'" + name + "','" + code + "','" + password +"');");
+                    "INSERT INTO debt.meeting(id_meeting, name, code, password) VALUES("+ freeMeetingId + ",'" + name + "','" + code + "','" + password +"');");
             stmt.close();
             c.commit();
             c.close();
@@ -673,11 +655,12 @@ public class UserServiceImpl implements UserService {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
             System.out.println("Insert Meeting failed");
-            return false;
+            return Optional.empty();
         }
         System.out.println("Insert Meeting done successfully");
         userRepository.initMeetings();
-        return joinThruCode(code,password,"owner");
+        joinThruCode(code,password,"owner");
+        return Optional.ofNullable(code);
     };
     @Override
     public ProductListDto getProducts(Integer id_meeting){

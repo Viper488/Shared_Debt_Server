@@ -2,6 +2,8 @@ package com.company.service;
 
 import com.company.dto.*;
 
+import java.util.Optional;
+
 public interface UserService {
     UserListDto getUsers();
     MeetingListDto getMeetings();
@@ -13,7 +15,7 @@ public interface UserService {
     MeetingDetailsDto getMeetingDetailsCode(String code);
     boolean insertPayment(PaymentDto paymentDto);
     PaymentListDto getPayments(Integer idTable, Integer idPerson, String which);
-    boolean createMeeting(String name, String password);
+    Optional<String> createMeeting(String name, String password);
     MeetingListDto getPersonMeetings(Integer id_person);
     ProductListDto getProducts(Integer id_meeting);
     boolean insertProduct(String name, Double price, Integer id_person, Integer id_meeting);
