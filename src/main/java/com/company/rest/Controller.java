@@ -13,18 +13,16 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/ud-server/")
+@RequestMapping("/sd-server/")
 public class Controller {
     private static final Logger LOGGER  = LoggerFactory.getLogger(Controller.class);
 
-    @Autowired
-    UserService userService;
+    final UserService userService;
 
-    @CrossOrigin
-    @GetMapping(value = "/start")
-    public ResponseEntity workingHttp(){
-        return new ResponseEntity("dzialam", HttpStatus.OK);
+    public Controller(UserService userService) {
+        this.userService = userService;
     }
+
     @GetMapping(value = "/users")
     public ResponseEntity getUsersJson(){
         return ResponseEntity.ok(userService.getUsers());
