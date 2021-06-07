@@ -1,9 +1,12 @@
 package com.company.service.impl;
 
 import com.company.dto.*;
+import com.company.rest.Controller;
 import com.company.service.ConnectDB;
 import com.company.service.UserRepository;
 import com.company.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +25,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private UserDto userDto;
     private MeetingDetailsDto meetingDetailsDto;
-
+    private static final Logger LOGGER  = LoggerFactory.getLogger(UserServiceImpl.class);
 
 
     public UserServiceImpl() {
@@ -85,7 +88,7 @@ public class UserServiceImpl implements UserService {
             System.exit(0);
         }
         meetingListDto = new MeetingListDto(list);
-        System.out.println("Person" + id_person + " meetings downloaded successfully");
+        LOGGER.info("Person" + id_person + " meetings downloaded successfully");
         return meetingListDto;
     }
 
@@ -110,7 +113,7 @@ public class UserServiceImpl implements UserService {
         for (UserDto checkUser:userRepository.getUsers().getUsers()
              ) {
             if(checkUser.getEmail().equals(registerDto.getEmail())){
-                System.out.println("Person with this email already exists");
+                LOGGER.info("Person with this email already exists");
                 return false;
             }
         }
@@ -126,14 +129,14 @@ public class UserServiceImpl implements UserService {
             stmt.close();
             c.commit();
             c.close();
-            System.out.println("Insert Person done successfully");
+            LOGGER.info("Insert Person done successfully");
             userRepository.initUsers();
             return true;
 
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
-            System.out.println("Insert Person failed");
+            LOGGER.info("Insert Person failed");
             return false;
         }
 
@@ -203,10 +206,10 @@ public class UserServiceImpl implements UserService {
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
-            System.out.println("Insert person into meeting failed");
+            LOGGER.info("Insert person into meeting failed");
             return false;
         }
-        System.out.println("Insert person into meeting done successfully");
+        LOGGER.info("Insert person into meeting done successfully");
         return true;
     }
 
@@ -255,10 +258,10 @@ public class UserServiceImpl implements UserService {
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
-            System.out.println("Insert person into meeting failed");
+            LOGGER.info("Insert person into meeting failed");
             return false;
         }
-        System.out.println("Insert person into meeting done successfully");
+        LOGGER.info("Insert person into meeting done successfully");
         return true;
     }
     private Integer getFreeId(){
@@ -280,7 +283,7 @@ public class UserServiceImpl implements UserService {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
-        System.out.println("Free id: " + freeId);
+        LOGGER.info("Free id: " + freeId);
         return freeId;
     }
 
@@ -324,7 +327,7 @@ public class UserServiceImpl implements UserService {
             System.exit(0);
         }
         meetingDetailsDto = new MeetingDetailsDto(meId,nameMe,code,password,personMeetingDtos);
-        System.out.println("Users from meeting " + id_meeting +" downloaded successfully");
+        LOGGER.info("Users from meeting " + id_meeting +" downloaded successfully");
     }
 
     private void loadCodeMeting(String code){
@@ -367,7 +370,7 @@ public class UserServiceImpl implements UserService {
             System.exit(0);
         }
         meetingDetailsDto = new MeetingDetailsDto(meId,nameMe,codeMe,passwordMe,personMeetingDtos);
-        System.out.println("Users from meeting " + code +" downloaded successfully");
+        LOGGER.info("Users from meeting " + code +" downloaded successfully");
     }
 
     private Integer getFreePaymentId(){
@@ -388,7 +391,7 @@ public class UserServiceImpl implements UserService {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
-        System.out.println("Free id: " + freeId);
+        LOGGER.info("Free id: " + freeId);
         return freeId;
     }
     private Integer getFreeMeetingId(){
@@ -409,7 +412,7 @@ public class UserServiceImpl implements UserService {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
-        System.out.println("Free id: " + freeId);
+        LOGGER.info("Free id: " + freeId);
         return freeId;
     }
     private Integer getFreeProductId(){
@@ -430,7 +433,7 @@ public class UserServiceImpl implements UserService {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
-        System.out.println("Free id: " + freeId);
+        LOGGER.info("Free id: " + freeId);
         return freeId;
     }
 
@@ -441,7 +444,7 @@ public class UserServiceImpl implements UserService {
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date(System.currentTimeMillis());
         String currentDate = formatter.format(date);
-        System.out.println(formatter.format(date));
+        LOGGER.info(formatter.format(date));
         try {
             Connection c = ConnectDB.connectToDB();
 
@@ -455,10 +458,10 @@ public class UserServiceImpl implements UserService {
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
-            System.out.println("Insert Payment failed");
+            LOGGER.info("Insert Payment failed");
             return false;
         }
-        System.out.println("Insert Payment done successfully");
+        LOGGER.info("Insert Payment done successfully");
         return true;
     }
 
@@ -477,7 +480,7 @@ public class UserServiceImpl implements UserService {
         List<PaymentGetDto> paymentGetDtos  = new ArrayList<>();
         try {
             Connection c = ConnectDB.connectToDB();
-            System.out.println("Opened database successfully");
+            LOGGER.info("Opened database successfully");
 
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(query);
@@ -500,7 +503,7 @@ public class UserServiceImpl implements UserService {
             System.exit(0);
         }
         paymentListDto = new PaymentListDto(paymentGetDtos);
-        System.out.println("Payments downloaded successfully");
+        LOGGER.info("Payments downloaded successfully");
         return  paymentListDto;
     }
 
@@ -518,7 +521,7 @@ public class UserServiceImpl implements UserService {
         Double sumPayments = 0.0;
         try {
             Connection c = ConnectDB.connectToDB();
-            System.out.println("Opened database successfully");
+            LOGGER.info("Opened database successfully");
 
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(query);
@@ -537,7 +540,7 @@ public class UserServiceImpl implements UserService {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
-        System.out.println("Payments Sum downloaded successfully");
+        LOGGER.info("Payments Sum downloaded successfully");
         return  sumPayments;
     }
 
@@ -579,10 +582,10 @@ public class UserServiceImpl implements UserService {
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
-            System.out.println("Insert Meeting failed");
+            LOGGER.info("Insert Meeting failed");
             return Optional.empty();
         }
-        System.out.println("Insert Meeting done successfully");
+        LOGGER.info("Insert Meeting done successfully");
         userRepository.initMeetings();
         joinThruCode(code,password,"owner");
         return Optional.ofNullable(code);
@@ -623,7 +626,7 @@ public class UserServiceImpl implements UserService {
             System.exit(0);
         }
         productListDto = new ProductListDto(list);
-        System.out.println("Products from meeting " + id_meeting +" downloaded successfully");
+        LOGGER.info("Products from meeting " + id_meeting +" downloaded successfully");
 
         return productListDto;
     };
@@ -636,7 +639,7 @@ public class UserServiceImpl implements UserService {
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date(System.currentTimeMillis());
         String currentDate = formatter.format(date);
-        System.out.println(formatter.format(date));
+        LOGGER.info(formatter.format(date));
         try {
             Connection c = ConnectDB.connectToDB();
 
@@ -650,10 +653,10 @@ public class UserServiceImpl implements UserService {
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
-            System.out.println("Insert Product failed");
+            LOGGER.info("Insert Product failed");
             return false;
         }
-        System.out.println("Insert Product done successfully");
+        LOGGER.info("Insert Product done successfully");
         return true;
     };
 
@@ -675,10 +678,10 @@ public class UserServiceImpl implements UserService {
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
-            System.out.println("Delete Product failed");
+            LOGGER.info("Delete Product failed");
             return false;
         }
-        System.out.println("Delete Product done successfully");
+        LOGGER.info("Delete Product done successfully");
         return true;
     };
 }

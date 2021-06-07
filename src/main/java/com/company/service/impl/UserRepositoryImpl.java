@@ -1,8 +1,11 @@
 package com.company.service.impl;
 
 import com.company.dto.*;
+import com.company.rest.Controller;
 import com.company.service.ConnectDB;
 import com.company.service.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -16,6 +19,7 @@ import java.util.List;
 public class UserRepositoryImpl implements UserRepository {
     private UserListDto userListDto;
     private MeetingListDto meetingListDto;
+    private static final Logger LOGGER  = LoggerFactory.getLogger(UserRepositoryImpl.class);
 
     public UserRepositoryImpl() {
         initUsers();
@@ -37,7 +41,7 @@ public class UserRepositoryImpl implements UserRepository {
         List<UserDto> users  = new ArrayList<>();
         try {
             Connection c = ConnectDB.connectToDB();
-            System.out.println("Opened database successfully");
+            LOGGER.info("Opened database successfully");
 
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT * FROM debt.person");
@@ -58,7 +62,7 @@ public class UserRepositoryImpl implements UserRepository {
             System.exit(0);
         }
         userListDto = new UserListDto(users);
-        System.out.println("Users downloaded successfully");
+        LOGGER.info("Users downloaded successfully");
     }
     @Override
     public UserDto findUser(String email, String password){
@@ -74,7 +78,7 @@ public class UserRepositoryImpl implements UserRepository {
         List<MeetingDto> meetingDtos  = new ArrayList<>();
         try {
             Connection c = ConnectDB.connectToDB();
-            System.out.println("Opened database successfully");
+            LOGGER.info("Opened database successfully");
 
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT * FROM debt.meeting");
@@ -93,6 +97,6 @@ public class UserRepositoryImpl implements UserRepository {
             System.exit(0);
         }
         meetingListDto = new MeetingListDto(meetingDtos);
-        System.out.println("Meetings downloaded successfully");
+        LOGGER.info("Meetings downloaded successfully");
     }
 }
