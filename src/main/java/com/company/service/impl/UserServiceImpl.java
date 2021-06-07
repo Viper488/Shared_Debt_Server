@@ -1,6 +1,7 @@
 package com.company.service.impl;
 
 import com.company.dto.*;
+import com.company.service.ConnectDB;
 import com.company.service.UserRepository;
 import com.company.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,16 +62,10 @@ public class UserServiceImpl implements UserService {
         userRepository.initMeetings();
         MeetingListDto meetingListDto;
         List<MeetingDto> list = new ArrayList<>();
-        Connection c = null;
-        Statement stmt  = null;
         try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://195.150.230.210:5434/2020_hamernik_artur",
-                            "2020_hamernik_artur", "31996");
-            c.setAutoCommit(false);
+            Connection c = ConnectDB.connectToDB();
 
-            stmt = c.createStatement();
+            Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT m.id_meeting, name, code, password FROM debt.meeting AS m "
                     + "INNER JOIN debt.meeting_person AS mp ON mp.id_meeting = m.id_meeting "+
                     "WHERE mp.id_person = "+ id_person +';');
@@ -93,6 +88,7 @@ public class UserServiceImpl implements UserService {
         System.out.println("Person" + id_person + " meetings downloaded successfully");
         return meetingListDto;
     }
+
     @Override
     public boolean logIn(LoginDto loginDto) {
         userRepository.initUsers();
@@ -100,6 +96,7 @@ public class UserServiceImpl implements UserService {
         userDto = userRepository.findUser(loginDto.getEmail(), loginDto.getPassword());
         return userDto != null;
     }
+
     @Override
     public UserDto getLoggedUser() {
         return userDto;
@@ -117,16 +114,12 @@ public class UserServiceImpl implements UserService {
                 return false;
             }
         }
-        Connection c = null;
-        Statement stmt  = null;
-        try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://195.150.230.210:5434/2020_hamernik_artur",
-                            "2020_hamernik_artur", "31996");
-            c.setAutoCommit(false);
 
-            stmt = c.createStatement();
+        try {
+
+            Connection c = ConnectDB.connectToDB();
+
+            Statement stmt = c.createStatement();
             stmt.executeUpdate(
                     "INSERT INTO debt.person(id_person,nick,name,surname,email,password) VALUES("+ getFreeId() + ",'" + registerDto.getNick() + "','" + registerDto.getName() +"','"
                             + registerDto.getSurname() +"','" + registerDto.getEmail()  +"','"+ registerDto.getPassword()+"');");
@@ -147,18 +140,13 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean checkIfPerson(Integer id_meeting, Integer id_person){
-        Connection c = null;
-        Statement stmt  = null;
         Integer meetId = null;
         Integer perId = null;
         try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://195.150.230.210:5434/2020_hamernik_artur",
-                            "2020_hamernik_artur", "31996");
-            c.setAutoCommit(false);
 
-            stmt = c.createStatement();
+            Connection c = ConnectDB.connectToDB();
+
+            Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT id_meeting, id_person FROM debt.meeting_person WHERE id_meeting = "+ id_meeting + " AND id_person = " + id_person+";");
             while ( rs.next() ) {
                 meetId = rs.getInt("id_meeting");
@@ -179,6 +167,7 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+
     @Override
     public boolean joinThruCode(String code, String password, String memberType){
         userRepository.initUsers();
@@ -202,16 +191,10 @@ public class UserServiceImpl implements UserService {
         if(checkIfPerson(meetingDto.getId_meeting(), getLoggedUser().getId_person())){
             return false;
         }
-        Connection c = null;
-        Statement stmt  = null;
         try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://195.150.230.210:5434/2020_hamernik_artur",
-                            "2020_hamernik_artur", "31996");
-            c.setAutoCommit(false);
+            Connection c = ConnectDB.connectToDB();
 
-            stmt = c.createStatement();
+            Statement stmt = c.createStatement();
             stmt.executeUpdate(
                     "INSERT INTO debt.meeting_person VALUES("+ meetingDto.getId_meeting() +","+ getLoggedUser().getId_person() +",'"+ memberType +"');");
             stmt.close();
@@ -226,6 +209,7 @@ public class UserServiceImpl implements UserService {
         System.out.println("Insert person into meeting done successfully");
         return true;
     }
+
     @Override
     public boolean addToMeeting(Integer id_meeting, String nick){
         userRepository.initUsers();
@@ -257,16 +241,12 @@ public class UserServiceImpl implements UserService {
         if(checkIfPerson(id_meeting, id_added_person)){
             return false;
         }
-        Connection c = null;
-        Statement stmt  = null;
-        try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://195.150.230.210:5434/2020_hamernik_artur",
-                            "2020_hamernik_artur", "31996");
-            c.setAutoCommit(false);
 
-            stmt = c.createStatement();
+        try {
+
+            Connection c = ConnectDB.connectToDB();
+
+            Statement stmt = c.createStatement();
             stmt.executeUpdate(
                     "INSERT INTO debt.meeting_person VALUES("+ id_meeting +","+ id_added_person +",'member');");
             stmt.close();
@@ -282,17 +262,12 @@ public class UserServiceImpl implements UserService {
         return true;
     }
     private Integer getFreeId(){
-        Connection c = null;
-        Statement stmt  = null;
         Integer freeId = null;
         try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://195.150.230.210:5434/2020_hamernik_artur",
-                            "2020_hamernik_artur", "31996");
-            c.setAutoCommit(false);
 
-            stmt = c.createStatement();
+            Connection c = ConnectDB.connectToDB();
+
+            Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT MAX(id_person)+1 AS \"free_id\" FROM debt.person");
             while ( rs.next() ) {
                 Integer sqlId = rs.getInt("free_id");
@@ -315,16 +290,10 @@ public class UserServiceImpl implements UserService {
         String nameMe = null;
         String code = null;
         String password = null;
-        Connection c = null;
-        Statement stmt  = null;
         try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://195.150.230.210:5434/2020_hamernik_artur",
-                            "2020_hamernik_artur", "31996");
-            c.setAutoCommit(false);
+            Connection c = ConnectDB.connectToDB();
 
-            stmt = c.createStatement();
+            Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT meeting.id_meeting,meeting.name AS \"meeting_name\", meeting.code, meeting.password, pe.id_person,pe.nick,pe.name,pe.surname,pe.email,mp.user_type FROM debt.person AS pe" +
                     " INNER JOIN debt.meeting_person AS mp ON pe.id_person = mp.id_person" +
                     " INNER JOIN debt.meeting ON meeting.id_meeting = mp.id_meeting" +
@@ -364,16 +333,10 @@ public class UserServiceImpl implements UserService {
         String nameMe = null;
         String codeMe = null;
         String passwordMe = null;
-        Connection c = null;
-        Statement stmt  = null;
         try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://195.150.230.210:5434/2020_hamernik_artur",
-                            "2020_hamernik_artur", "31996");
-            c.setAutoCommit(false);
+            Connection c = ConnectDB.connectToDB();
 
-            stmt = c.createStatement();
+            Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT meeting.id_meeting,meeting.name AS \"meeting_name\", meeting.code, meeting.password, pe.id_person,pe.nick,pe.name,pe.surname,pe.email,mp.user_type FROM debt.person AS pe" +
                     " INNER JOIN debt.meeting_person AS mp ON pe.id_person = mp.id_person" +
                     " INNER JOIN debt.meeting ON meeting.id_meeting = mp.id_meeting" +
@@ -408,17 +371,11 @@ public class UserServiceImpl implements UserService {
     }
 
     private Integer getFreePaymentId(){
-        Connection c = null;
-        Statement stmt  = null;
         Integer freeId = null;
         try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://195.150.230.210:5434/2020_hamernik_artur",
-                            "2020_hamernik_artur", "31996");
-            c.setAutoCommit(false);
+            Connection c = ConnectDB.connectToDB();
 
-            stmt = c.createStatement();
+            Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT MAX(id_payment)+1 AS \"free_id\" FROM debt.payment");
             while ( rs.next() ) {
                 Integer sqlId = rs.getInt("free_id");
@@ -435,17 +392,11 @@ public class UserServiceImpl implements UserService {
         return freeId;
     }
     private Integer getFreeMeetingId(){
-        Connection c = null;
-        Statement stmt  = null;
         Integer freeId = null;
         try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://195.150.230.210:5434/2020_hamernik_artur",
-                            "2020_hamernik_artur", "31996");
-            c.setAutoCommit(false);
+            Connection c = ConnectDB.connectToDB();
 
-            stmt = c.createStatement();
+            Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT MAX(id_meeting)+1 AS \"free_id\" FROM debt.meeting");
             while ( rs.next() ) {
                 Integer sqlId = rs.getInt("free_id");
@@ -462,17 +413,11 @@ public class UserServiceImpl implements UserService {
         return freeId;
     }
     private Integer getFreeProductId(){
-        Connection c = null;
-        Statement stmt  = null;
         Integer freeId = null;
         try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://195.150.230.210:5434/2020_hamernik_artur",
-                            "2020_hamernik_artur", "31996");
-            c.setAutoCommit(false);
+            Connection c = ConnectDB.connectToDB();
 
-            stmt = c.createStatement();
+            Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT MAX(id_product)+1 AS \"free_id\" FROM debt.products");
             while ( rs.next() ) {
                 Integer sqlId = rs.getInt("free_id");
@@ -488,24 +433,19 @@ public class UserServiceImpl implements UserService {
         System.out.println("Free id: " + freeId);
         return freeId;
     }
+
     @Override
     public boolean insertPayment(PaymentDto paymentDto){
         userRepository.initUsers();
         userRepository.initMeetings();
-        Connection c = null;
-        Statement stmt  = null;
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date(System.currentTimeMillis());
         String currentDate = formatter.format(date);
         System.out.println(formatter.format(date));
         try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://195.150.230.210:5434/2020_hamernik_artur",
-                            "2020_hamernik_artur", "31996");
-            c.setAutoCommit(false);
+            Connection c = ConnectDB.connectToDB();
 
-            stmt = c.createStatement();
+            Statement stmt = c.createStatement();
             stmt.executeUpdate(
                     "INSERT INTO debt.payment(id_payment, date, time, value,id_person,id_meeting) VALUES("+ getFreePaymentId() + ",'" + currentDate.substring(0,10) + "','" + currentDate.substring(11,19) + "'," + paymentDto.getValue() +","
                             + paymentDto.getId_person() +"," + paymentDto.getId_meeting() +");");
@@ -521,6 +461,7 @@ public class UserServiceImpl implements UserService {
         System.out.println("Insert Payment done successfully");
         return true;
     }
+
     @Override
     public PaymentListDto getPayments(Integer idTable, Integer idPerson, String which){
         userRepository.initUsers();
@@ -532,20 +473,13 @@ public class UserServiceImpl implements UserService {
         else{
             query = "SELECT id_payment, value, (SELECT nick FROM debt.person AS pe WHERE pe.id_person = pa.id_person), id_meeting, date, time FROM debt.payment AS pa WHERE id_meeting = " + idTable+";";
         }
-        PaymentListDto paymentListDto;
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Connection c = null;
-        Statement stmt  = null;
+        PaymentListDto paymentListDto;;
         List<PaymentGetDto> paymentGetDtos  = new ArrayList<>();
         try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://195.150.230.210:5434/2020_hamernik_artur",
-                            "2020_hamernik_artur", "31996");
-            c.setAutoCommit(false);
+            Connection c = ConnectDB.connectToDB();
             System.out.println("Opened database successfully");
 
-            stmt = c.createStatement();
+            Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while ( rs.next() ) {
                 Integer sqlId = rs.getInt("id_payment");
@@ -582,17 +516,11 @@ public class UserServiceImpl implements UserService {
             query = "SELECT SUM(value) FROM debt.payment AS pa WHERE id_meeting = " + idTable+";";
         }
         Double sumPayments = 0.0;
-        Connection c = null;
-        Statement stmt  = null;
         try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://195.150.230.210:5434/2020_hamernik_artur",
-                            "2020_hamernik_artur", "31996");
-            c.setAutoCommit(false);
+            Connection c = ConnectDB.connectToDB();
             System.out.println("Opened database successfully");
 
-            stmt = c.createStatement();
+            Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while ( rs.next() ) {
                 String sqlVal = rs.getString("sum");
@@ -612,6 +540,7 @@ public class UserServiceImpl implements UserService {
         System.out.println("Payments Sum downloaded successfully");
         return  sumPayments;
     }
+
     private String randomCode(){
         String numbers = "0123456789";
         char[] chars = numbers.toCharArray();
@@ -622,13 +551,12 @@ public class UserServiceImpl implements UserService {
         }
         return stringBuilder.toString();
     }
+
     @Override
     public Optional<String> createMeeting(String name, String password){
         userRepository.initUsers();
         userRepository.initMeetings();
         Integer freeMeetingId = getFreeMeetingId();
-        Connection c = null;
-        Statement stmt  = null;
         String code = null;
         MeetingListDto meetingListDto = userRepository.getMeetings();
         code = randomCode();
@@ -639,13 +567,10 @@ public class UserServiceImpl implements UserService {
             }
         }
         try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://195.150.230.210:5434/2020_hamernik_artur",
-                            "2020_hamernik_artur", "31996");
-            c.setAutoCommit(false);
 
-            stmt = c.createStatement();
+            Connection c = ConnectDB.connectToDB();
+
+            Statement stmt = c.createStatement();
             stmt.executeUpdate(
                     "INSERT INTO debt.meeting(id_meeting, name, code, password) VALUES("+ freeMeetingId + ",'" + name + "','" + code + "','" + password +"');");
             stmt.close();
@@ -662,6 +587,7 @@ public class UserServiceImpl implements UserService {
         joinThruCode(code,password,"owner");
         return Optional.ofNullable(code);
     };
+
     @Override
     public ProductListDto getProducts(Integer id_meeting){
         userRepository.initUsers();
@@ -669,16 +595,10 @@ public class UserServiceImpl implements UserService {
 
         List<ProductDto> list = new ArrayList<>();
         ProductListDto productListDto;
-        Connection c = null;
-        Statement stmt  = null;
         try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://195.150.230.210:5434/2020_hamernik_artur",
-                            "2020_hamernik_artur", "31996");
-            c.setAutoCommit(false);
+            Connection c = ConnectDB.connectToDB();
 
-            stmt = c.createStatement();
+            Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT id_product, pr.name, price, nick, id_meeting, date, time FROM debt.products AS pr " +
                     "INNER JOIN debt.person AS pe ON pe.id_person = pr.id_person " +
                     "WHERE id_meeting = "+ id_meeting+';');
@@ -707,25 +627,20 @@ public class UserServiceImpl implements UserService {
 
         return productListDto;
     };
+
     @Override
     public boolean insertProduct(String name, Double price, Integer id_person, Integer id_meeting){
         userRepository.initUsers();
         userRepository.initMeetings();
 
-        Connection c = null;
-        Statement stmt  = null;
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date(System.currentTimeMillis());
         String currentDate = formatter.format(date);
         System.out.println(formatter.format(date));
         try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://195.150.230.210:5434/2020_hamernik_artur",
-                            "2020_hamernik_artur", "31996");
-            c.setAutoCommit(false);
+            Connection c = ConnectDB.connectToDB();
 
-            stmt = c.createStatement();
+            Statement stmt = c.createStatement();
             stmt.executeUpdate(
                     "INSERT INTO debt.products(id_product, name, price, id_person, id_meeting, date, time) VALUES("+ getFreeProductId() + ",'" + name + "'," + price +","
                             + id_person +"," + id_meeting +",'"+ currentDate.substring(0,10) +"','"+ currentDate.substring(11,19) +"');");
@@ -747,16 +662,11 @@ public class UserServiceImpl implements UserService {
         userRepository.initUsers();
         userRepository.initMeetings();
 
-        Connection c = null;
-        Statement stmt  = null;
         try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://195.150.230.210:5434/2020_hamernik_artur",
-                            "2020_hamernik_artur", "31996");
-            c.setAutoCommit(false);
 
-            stmt = c.createStatement();
+            Connection c = ConnectDB.connectToDB();
+
+            Statement stmt = c.createStatement();
             stmt.executeUpdate(
                     "DELETE FROM debt.products WHERE id_product = " + id_product +";");
             stmt.close();

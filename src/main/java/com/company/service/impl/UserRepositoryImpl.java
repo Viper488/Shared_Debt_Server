@@ -1,6 +1,7 @@
 package com.company.service.impl;
 
 import com.company.dto.*;
+import com.company.service.ConnectDB;
 import com.company.service.UserRepository;
 import org.springframework.stereotype.Repository;
 
@@ -33,18 +34,12 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void initUsers(){
-        Connection c = null;
-        Statement stmt  = null;
         List<UserDto> users  = new ArrayList<>();
         try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://195.150.230.210:5434/2020_hamernik_artur",
-                            "2020_hamernik_artur", "31996");
-            c.setAutoCommit(false);
+            Connection c = ConnectDB.connectToDB();
             System.out.println("Opened database successfully");
 
-            stmt = c.createStatement();
+            Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT * FROM debt.person");
             while ( rs.next() ) {
                 Integer sqlId = rs.getInt("id_person");
@@ -76,18 +71,12 @@ public class UserRepositoryImpl implements UserRepository {
     }
     @Override
     public void initMeetings(){
-        Connection c = null;
-        Statement stmt  = null;
         List<MeetingDto> meetingDtos  = new ArrayList<>();
         try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://195.150.230.210:5434/2020_hamernik_artur",
-                            "2020_hamernik_artur", "31996");
-            c.setAutoCommit(false);
+            Connection c = ConnectDB.connectToDB();
             System.out.println("Opened database successfully");
 
-            stmt = c.createStatement();
+            Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT * FROM debt.meeting");
             while ( rs.next() ) {
                 Integer sqlId = rs.getInt("id_meeting");
