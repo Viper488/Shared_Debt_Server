@@ -8,6 +8,13 @@ public class MeetingListDto {
     public MeetingListDto() {
     }
 
+    /**
+     * MeetingListDto
+     *
+     * Dto used to send list of meetings via http request to user
+     *
+     * @param meetingDtoList
+     */
     public MeetingListDto(List<MeetingDto> meetingDtoList) {
         this.meetingDtoList = meetingDtoList;
     }

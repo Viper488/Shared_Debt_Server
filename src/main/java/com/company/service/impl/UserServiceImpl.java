@@ -18,6 +18,9 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * UserService implementation
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -31,6 +34,10 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl() {
     }
 
+    /**
+     * This method initiates users
+     * @return registered users
+     */
     @Override
     public UserListDto getUsers() {
         userRepository.initUsers();
@@ -38,12 +45,22 @@ public class UserServiceImpl implements UserService {
         return userRepository.getUsers();
     }
 
+    /**
+     * This method initiates meetings
+     * @return created meetings
+     */
     @Override
     public MeetingListDto getMeetings() {
         userRepository.initUsers();
         userRepository.initMeetings();
         return userRepository.getMeetings();
     }
+
+    /**
+     * This method prints the data of a meeting with given id, including list of members
+     * @param id_meeting
+     * @return details of meeting with given id
+     */
     @Override
     public MeetingDetailsDto getPersonMeetingListDto(Integer id_meeting) {
         userRepository.initUsers();
@@ -51,6 +68,12 @@ public class UserServiceImpl implements UserService {
         loadPeopleMeting(id_meeting);
         return meetingDetailsDto;
     }
+
+    /**
+     * This method prints the data of a meeting with given code, including list of members
+     * @param code
+     * @return details of meeting
+     */
     @Override
     public MeetingDetailsDto getMeetingDetailsCode(String code) {
         userRepository.initUsers();
@@ -59,6 +82,11 @@ public class UserServiceImpl implements UserService {
         return meetingDetailsDto;
     }
 
+    /**
+     * This method is used to get all meeting that person with given id is part of
+     * @param id_person
+     * @return meetings
+     */
     @Override
     public MeetingListDto getPersonMeetings(Integer id_person) {
         userRepository.initUsers();
@@ -92,6 +120,11 @@ public class UserServiceImpl implements UserService {
         return meetingListDto;
     }
 
+    /**
+     * This method checks if person with given data(email, password) exists in database
+     * @param loginDto
+     * @return true or else
+     */
     @Override
     public boolean logIn(LoginDto loginDto) {
         userRepository.initUsers();
@@ -100,11 +133,20 @@ public class UserServiceImpl implements UserService {
         return userDto != null;
     }
 
+    /**
+     *
+     * @return data of logged user
+     */
     @Override
     public UserDto getLoggedUser() {
         return userDto;
     }
 
+    /**
+     * This method is used register customer
+     * @param registerDto
+     * @return true or false
+     */
     @Override
     public boolean registerUser(RegisterDto registerDto) {
         userRepository.initUsers();
@@ -142,6 +184,12 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    /**
+     * This method checks if person with given id is part of meeting with given id.
+     * @param id_meeting
+     * @param id_person
+     * @return true or false
+     */
     private boolean checkIfPerson(Integer id_meeting, Integer id_person){
         Integer meetId = null;
         Integer perId = null;
@@ -171,6 +219,14 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
+    /**
+     * This method adds logged user to meeting with given code, if password he provided is correct and meeting with this code exists.
+     * This method is also called when someone creates a meeting then he is added with member type 'owner'
+     * @param code
+     * @param password
+     * @param memberType
+     * @return true or false
+     */
     @Override
     public boolean joinThruCode(String code, String password, String memberType){
         userRepository.initUsers();
@@ -213,6 +269,12 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
+    /**
+     * This method is called when another user adds someone to meeting
+     * @param id_meeting
+     * @param nick
+     * @return true or false
+     */
     @Override
     public boolean addToMeeting(Integer id_meeting, String nick){
         userRepository.initUsers();
@@ -264,6 +326,11 @@ public class UserServiceImpl implements UserService {
         LOGGER.info("Insert person into meeting done successfully");
         return true;
     }
+
+    /**
+     * This method is used to get free user id from database
+     * @return free id
+     */
     private Integer getFreeId(){
         Integer freeId = null;
         try {
@@ -287,6 +354,10 @@ public class UserServiceImpl implements UserService {
         return freeId;
     }
 
+    /**
+     * This method fills up details about meeting with given id
+     * @param id_meeting
+     */
     private void loadPeopleMeting(Integer id_meeting){
         List<PersonMeetingDto> personMeetingDtos = new ArrayList<>();
         Integer meId = null;
@@ -330,6 +401,10 @@ public class UserServiceImpl implements UserService {
         LOGGER.info("Users from meeting " + id_meeting +" downloaded successfully");
     }
 
+    /**
+     * This method fills up details about meeting with given code
+     * @param code
+     */
     private void loadCodeMeting(String code){
         List<PersonMeetingDto> personMeetingDtos = new ArrayList<>();
         Integer meId = null;
@@ -373,6 +448,10 @@ public class UserServiceImpl implements UserService {
         LOGGER.info("Users from meeting " + code +" downloaded successfully");
     }
 
+    /**
+     * This method is used to get free id payment
+     * @return free id payment
+     */
     private Integer getFreePaymentId(){
         Integer freeId = null;
         try {
@@ -394,6 +473,10 @@ public class UserServiceImpl implements UserService {
         LOGGER.info("Free id: " + freeId);
         return freeId;
     }
+    /**
+     * This method is used to get free id meeting
+     * @return free id meeting
+     */
     private Integer getFreeMeetingId(){
         Integer freeId = null;
         try {
@@ -415,6 +498,10 @@ public class UserServiceImpl implements UserService {
         LOGGER.info("Free id: " + freeId);
         return freeId;
     }
+    /**
+     * This method is used to get free id product
+     * @return free id product
+     */
     private Integer getFreeProductId(){
         Integer freeId = null;
         try {
@@ -437,6 +524,11 @@ public class UserServiceImpl implements UserService {
         return freeId;
     }
 
+    /**
+     * This method inserts payment done by logged user
+     * @param paymentDto
+     * @return true or false, depends on success
+     */
     @Override
     public boolean insertPayment(PaymentDto paymentDto){
         userRepository.initUsers();
@@ -465,6 +557,14 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
+
+    /**
+     * This method return all payments in given meeting or person depends on which param
+     * @param idTable
+     * @param idPerson
+     * @param which
+     * @return list of payments
+     */
     @Override
     public PaymentListDto getPayments(Integer idTable, Integer idPerson, String which){
         userRepository.initUsers();
@@ -507,6 +607,13 @@ public class UserServiceImpl implements UserService {
         return  paymentListDto;
     }
 
+    /**
+     * This method return sum of payments in given meeting or person depends on which param
+     * @param idTable
+     * @param idPerson
+     * @param which
+     * @return sum of payments
+     */
     @Override
     public Double getSumPayments(Integer idTable, Integer idPerson, String which){
         userRepository.initUsers();
@@ -544,6 +651,10 @@ public class UserServiceImpl implements UserService {
         return  sumPayments;
     }
 
+    /**
+     * this method generates random code to be assigned to meeting
+     * @return code
+     */
     private String randomCode(){
         String numbers = "0123456789";
         char[] chars = numbers.toCharArray();
@@ -555,6 +666,12 @@ public class UserServiceImpl implements UserService {
         return stringBuilder.toString();
     }
 
+    /**
+     * This method creates meeting
+     * @param name
+     * @param password
+     * @return code of created meeting
+     */
     @Override
     public Optional<String> createMeeting(String name, String password){
         userRepository.initUsers();
@@ -591,6 +708,11 @@ public class UserServiceImpl implements UserService {
         return Optional.ofNullable(code);
     };
 
+    /**
+     * This method returns products in meeting with given id
+     * @param id_meeting
+     * @return list of products
+     */
     @Override
     public ProductListDto getProducts(Integer id_meeting){
         userRepository.initUsers();
@@ -631,6 +753,14 @@ public class UserServiceImpl implements UserService {
         return productListDto;
     };
 
+    /**
+     * This method inserts a new product into list of products in a meeting with given id
+     * @param name
+     * @param price
+     * @param id_person
+     * @param id_meeting
+     * @return true or false, depends on success
+     */
     @Override
     public boolean insertProduct(String name, Double price, Integer id_person, Integer id_meeting){
         userRepository.initUsers();
@@ -660,6 +790,11 @@ public class UserServiceImpl implements UserService {
         return true;
     };
 
+    /**
+     * This method deletes a product with given id
+     * @param id_product
+     * @return true or false, depends on success
+     */
     @Override
     public boolean deleteProduct(Integer id_product){
         userRepository.initUsers();

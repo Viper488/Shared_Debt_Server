@@ -13,6 +13,18 @@ public class PaymentGetDto {
     public PaymentGetDto() {
     }
 
+    /**
+     * PaymentGetDto
+     *
+     * Dto used to get data via http request and present it to user.
+     *
+     * @param id_payment
+     * @param date
+     * @param time
+     * @param value
+     * @param nick
+     * @param id_meeting
+     */
     public PaymentGetDto(Integer id_payment, String date, String time, Double value, String nick, Integer id_meeting) {
         this.id_payment = id_payment;
         this.date = date;

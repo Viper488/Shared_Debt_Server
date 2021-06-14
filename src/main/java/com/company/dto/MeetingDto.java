@@ -9,6 +9,16 @@ public class MeetingDto {
     public MeetingDto() {
     }
 
+    /**
+     * MeetingDto
+     *
+     * Dto used to operate on meetings, mostly used to create one
+     *
+     * @param id_meeting
+     * @param name
+     * @param code
+     * @param password
+     */
     public MeetingDto(Integer id_meeting, String name, String code, String password) {
         this.id_meeting = id_meeting;
         this.name = name;

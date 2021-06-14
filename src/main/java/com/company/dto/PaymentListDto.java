@@ -8,6 +8,13 @@ public class PaymentListDto {
     public PaymentListDto() {
     }
 
+    /**
+     * PaymentListDto
+     *
+     * Dto used to show list of payments to user via http request
+     *
+     * @param paymentDtoList
+     */
     public PaymentListDto(List<PaymentGetDto> paymentDtoList) {
         this.paymentListDto = paymentDtoList;
     }

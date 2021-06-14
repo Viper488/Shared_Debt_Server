@@ -7,6 +7,14 @@ public class LoginDto {
     public LoginDto() {
     }
 
+    /**
+     * LoginDto
+     *
+     * Dto used to send login data via http request
+     *
+     * @param email
+     * @param password
+     */
     public LoginDto(String email, String password) {
         this.email = email;
         this.password = password;

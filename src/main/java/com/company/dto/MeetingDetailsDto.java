@@ -12,6 +12,17 @@ public class MeetingDetailsDto {
     public MeetingDetailsDto() {
     }
 
+    /**
+     * MeetingDetailsDto
+     *
+     * Dto used to hold details of a meeting, mostly used to hold list of users present in the meeting
+     *
+     * @param id_meeting
+     * @param name
+     * @param code
+     * @param password
+     * @param personMeetingList
+     */
     public MeetingDetailsDto(Integer id_meeting, String name, String code, String password, List<PersonMeetingDto> personMeetingList) {
         this.id_meeting = id_meeting;
         this.name = name;

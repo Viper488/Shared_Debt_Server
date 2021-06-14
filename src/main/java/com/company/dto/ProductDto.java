@@ -12,6 +12,19 @@ public class ProductDto {
     public ProductDto() {
     }
 
+    /**
+     * ProductDto
+     *
+     * Dto holding data of products added to meetings
+     *
+     * @param id_product
+     * @param name
+     * @param price
+     * @param nick
+     * @param date
+     * @param time
+     * @param id_meeting
+     */
     public ProductDto(Integer id_product, String name, Double price, String nick, String date,  String time, Integer id_meeting) {
         this.id_product = id_product;
         this.name = name;

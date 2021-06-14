@@ -11,6 +11,18 @@ public class UserDto {
     public UserDto(){
     }
 
+    /**
+     * UserDto
+     *
+     * Dto used to operate on users
+     *
+     * @param id_person
+     * @param nick
+     * @param name
+     * @param surname
+     * @param email
+     * @param password
+     */
     public UserDto(Integer id_person, String nick, String name, String surname, String email, String password) {
         this.id_person = id_person;
         this.nick = nick;

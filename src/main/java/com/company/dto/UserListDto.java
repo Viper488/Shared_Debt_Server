@@ -8,6 +8,10 @@ public class UserListDto {
     public UserListDto() {
     }
 
+    /**
+     * Dto holding list of users
+     * @param users
+     */
     public UserListDto(List<UserDto> users) {
         this.users = users;
     }

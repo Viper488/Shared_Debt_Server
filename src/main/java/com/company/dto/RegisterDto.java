@@ -10,6 +10,17 @@ public class RegisterDto {
     public RegisterDto() {
     }
 
+    /**
+     * RegisterDto
+     *
+     * Dto used to register in the system
+     *
+     * @param nick
+     * @param name
+     * @param surname
+     * @param email
+     * @param password
+     */
     public RegisterDto(String nick, String name, String surname, String email, String password) {
         this.nick = nick;
         this.name = name;

@@ -5,7 +5,16 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * This interface provides method that allows server to connect with database
+ */
 public interface ConnectDB {
+    /**
+     * This method is used to connect with remote database, it returns established connection
+     * @return connection
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     static Connection connectToDB() throws ClassNotFoundException, SQLException {
         Class.forName("org.postgresql.Driver");
         Connection c = DriverManager

@@ -8,6 +8,13 @@ public class ProductListDto {
     public ProductListDto() {
     }
 
+    /**
+     * ProductListDto
+     *
+     * Dto holding list of payments to be sent via http request
+     *
+     * @param productDtoList
+     */
     public ProductListDto(List<ProductDto> productDtoList) {
         this.productDtoList = productDtoList;
     }

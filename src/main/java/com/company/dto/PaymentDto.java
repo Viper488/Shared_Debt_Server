@@ -8,6 +8,15 @@ public class PaymentDto {
     public PaymentDto() {
     }
 
+    /**
+     * PaymentDto
+     *
+     * Dto used to insert payment via http request
+     *
+     * @param value
+     * @param id_meeting
+     * @param id_person
+     */
     public PaymentDto(float value, int id_meeting, int id_person) {
         this.value = value;
         this.id_meeting = id_meeting;

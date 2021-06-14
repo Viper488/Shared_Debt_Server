@@ -4,6 +4,9 @@ import com.company.dto.*;
 
 import java.util.Optional;
 
+/**
+ * UserService interface
+ */
 public interface UserService {
     UserListDto getUsers();
     MeetingListDto getMeetings();

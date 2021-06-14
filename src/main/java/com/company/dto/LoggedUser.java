@@ -8,6 +8,16 @@ public class LoggedUser {
     public LoggedUser() {
     }
 
+    /**
+     * LoggedUser
+     *
+     * Dto used to hold the data of currently logged user
+     *
+     * @param user_id
+     * @param nick
+     * @param name
+     * @param surname
+     */
     public LoggedUser(Integer user_id, String nick, String name, String surname) {
         this.user_id = user_id;
         this.nick = nick;

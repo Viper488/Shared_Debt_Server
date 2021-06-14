@@ -15,6 +15,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * UserRepository implementation
+ */
 @Repository
 public class UserRepositoryImpl implements UserRepository {
     private UserListDto userListDto;
@@ -26,16 +29,27 @@ public class UserRepositoryImpl implements UserRepository {
         initMeetings();
     }
 
+    /**
+     * Get list of all registered users
+     * @return list of users
+     */
     @Override
     public UserListDto getUsers() {
         return userListDto;
     }
 
+    /**
+     * Get list of all created meetings
+     * @return list of meetings
+     */
     @Override
     public MeetingListDto getMeetings() {
         return meetingListDto;
     }
 
+    /**
+     * Get list of users from remote database
+     */
     @Override
     public void initUsers(){
         List<UserDto> users  = new ArrayList<>();
@@ -64,6 +78,13 @@ public class UserRepositoryImpl implements UserRepository {
         userListDto = new UserListDto(users);
         LOGGER.info("Users downloaded successfully");
     }
+
+    /**
+     * Find specific user with given email and password
+     * @param email
+     * @param password
+     * @return user object
+     */
     @Override
     public UserDto findUser(String email, String password){
         for(UserDto loginUser :userListDto.getUsers()) {
@@ -73,6 +94,10 @@ public class UserRepositoryImpl implements UserRepository {
         }
         return null;
     }
+
+    /**
+     * Get list of meetings from remote database
+     */
     @Override
     public void initMeetings(){
         List<MeetingDto> meetingDtos  = new ArrayList<>();

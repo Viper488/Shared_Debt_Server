@@ -11,6 +11,18 @@ public class PersonMeetingDto {
     public PersonMeetingDto() {
     }
 
+    /**
+     * PersonMeetingDto
+     *
+     * Dto used to hold data of users present in a meeting
+     *
+     * @param id_person
+     * @param nick
+     * @param name
+     * @param surname
+     * @param email
+     * @param user_type
+     */
     public PersonMeetingDto(Integer id_person, String nick, String name, String surname, String email, String user_type) {
         this.id_person = id_person;
         this.nick = nick;
